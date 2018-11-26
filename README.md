@@ -1,3 +1,7 @@
+## Idées
+- Plan comptable général / recherche
+- Amortissement pour des investissements
+
 # accounting-project
 Accounting project - CNAM
 
