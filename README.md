@@ -1,6 +1,6 @@
-## Idées
+## Objectif
 - Plan comptable général / recherche
-- Amortissement pour des investissements
+- Ammortissement des immobilisations
 
 # accounting-project
 Accounting project - CNAM
