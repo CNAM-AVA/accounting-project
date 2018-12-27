@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 import AppNavigation from '../components/AppNavigation'
+import Dashboard from '../components/Dashboard'
 import "../static/styles.scss"
 
 export default class Index extends React.Component {
@@ -22,6 +23,7 @@ export default class Index extends React.Component {
                     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
                 </Head>
                 <AppNavigation></AppNavigation>
+                <Dashboard></Dashboard>
             </div>
     	);
     }
