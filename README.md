@@ -2,6 +2,16 @@
 - Plan comptable général / recherche
 - Ammortissement des immobilisations
 
+Powerpoint:
+ - Sujet
+ - Programmation / langage utilisé
+ - Résultat attendu
+ - Suivi des temps par groupe / personne
+ - Fonctionnalités
+ - Environnment / outils
+ - Difficultés rencontrées
+
+
 # accounting-project
 Accounting project - CNAM
 
