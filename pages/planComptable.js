@@ -1,8 +1,7 @@
 import React from 'react'
-import Dashboard from '../components/Dashboard'
-import MainLayout from '../components/MainLayout'
+import MainLayout from "../components/MainLayout";
 
-export default class Index extends React.Component {
+export default class PlanComptable extends React.Component {
 
     constructor(props) {
         super(props);
@@ -14,7 +13,7 @@ export default class Index extends React.Component {
     render() {
         return(
             <MainLayout>
-                <Dashboard/>
+                <p>Ok</p>
             </MainLayout>
         );
     }
