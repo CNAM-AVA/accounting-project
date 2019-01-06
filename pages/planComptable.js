@@ -73,7 +73,12 @@ class PlanComptable extends React.Component {
 
     search(event) {
 
-         if (event.target.value.trim().length == 0) {
+         if (event.target.value.length < this.state.search.length) {
+             this.setState({data: this.state.searchData, search: ""});
+             return
+         }
+
+         if (event.target.value.trim().length === 0) {
              this.setState({data: this.state.searchData, search: ""});
              return
          }
