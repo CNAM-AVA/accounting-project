@@ -8,6 +8,10 @@ const styles = theme => ({
     root: {
         flexGrow: 1
 	},
+	container: {
+		display: 'flex',
+		flexWrap: 'wrap',
+	},
 	formControl: {
 		margin: theme.spacing.unit * 2,
 		marginBottom: theme.spacing.unit,
@@ -20,24 +24,21 @@ const styles = theme => ({
 		flexWrap: 'wrap',
 	},
 	textField: {
-		marginLeft: `${theme.spacing.unit}px 0`,
-		marginTop: theme.spacing.unit * 2,
-		marginBottom: theme.spacing.unit * 2,
+		margin: theme.spacing.unit * 2,
 	},
+	formLabel: {
+		marginBottom: theme.spacing.unit * 3,
+	}
 });
 
 let id = 0;
-function createData(name, calories, fat, carbs, protein) {
+function createData(dateDebut, dateFin, calcul, montant) {
   id += 1;
-  return { id, name, calories, fat, carbs, protein };
+  return { id, dateDebut, dateFin, calcul, montant };
 }
 
 const rows = [
-	createData('Frozen yoghurt', 159, 6.0, 24),
-	createData('Ice cream sandwich', 237, 9.0, 37),
-	createData('Eclair', 262, 16.0, 24),
-	createData('Cupcake', 305, 3.7, 67),
-	createData('Gingerbread', 356, 16.0, 49),
+	createData('dd/mm/YY', 'dd/mm/YY', '10 000 x (158/360) x 20', '1000'),
 ];
 
 class Ammortissements extends React.Component {
@@ -47,7 +48,6 @@ class Ammortissements extends React.Component {
 		this.state = {
 			msg: "yes",
 			value: "lineaire",
-			lifetime: '',
 		};
 	}
 
@@ -63,7 +63,7 @@ class Ammortissements extends React.Component {
 		return(
 			<MainLayout>
 				<FormControl component="fieldset" className={classes.formControl}>
-					<FormLabel>Type d'ammortissement</FormLabel>
+					<FormLabel className={classes.formLabel}>Type d'ammortissement</FormLabel>
 					<RadioGroup
 						aria-label="type"
 						name="type"
@@ -79,11 +79,24 @@ class Ammortissements extends React.Component {
 				<form className={classes.container} noValidate autoComplete="off">
 					<FormControl component="fieldset" className={classes.formControl}>
 
-						<FormLabel>Calcul</FormLabel>
+						<FormLabel className={classes.formLabel}>Calcul</FormLabel>
 						<TextField
 							id="outlined-number"
 							label="Durée de vie du bien"
-							value={this.state.lifetime}
+							value={this.state.dureeVie}
+							onChange={this.handleChange}
+							type="number"
+							className={classes.textField}
+							InputLabelProps={{
+								shrink: true,
+							}}
+							margin="normal"
+							variant="outlined"
+						/>
+						<TextField
+							id="outlined-montant"
+							label="Montant du bien"
+							value={this.state.montant}
 							onChange={this.handleChange}
 							type="number"
 							className={classes.textField}
@@ -96,7 +109,7 @@ class Ammortissements extends React.Component {
 					</FormControl>
 				</form>
 				<FormControl component="fieldset" className={classes.formControl}>
-					<FormLabel component="legend">Tableau d'ammortissement</FormLabel>
+					<FormLabel  className={classes.formLabel}>Tableau d'ammortissement</FormLabel>
 					<Table className={classes.table}>
 						<TableHead>
 						<TableRow>
@@ -111,11 +124,11 @@ class Ammortissements extends React.Component {
 							return (
 							<TableRow key={row.id}>
 								<TableCell component="th" scope="row">
-								{row.name}
+								{row.dateDebut}
 								</TableCell>
-								<TableCell align="right">{row.calories}</TableCell>
-								<TableCell align="right">{row.fat}</TableCell>
-								<TableCell align="right">{row.carbs}</TableCell>
+								<TableCell align="right">{row.dateFin}</TableCell>
+								<TableCell align="right">{row.calcul}</TableCell>
+								<TableCell align="right">{row.montant}</TableCell>
 							</TableRow>
 							);
 						})}
