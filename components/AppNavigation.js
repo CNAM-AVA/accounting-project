@@ -115,7 +115,7 @@ class TemporaryDrawer extends React.Component {
                             <ListItemText primary={'Plan comptable'} />
                         </ListItem>
                     </Link>
-                    <Link href="/ammortissements">
+                    <Link href="/amortissements">
                         <ListItem button key={'Amortissements'}>
                             <ListItemIcon><InboxIcon/></ListItemIcon>
                             <ListItemText primary={'Amortissements'} />

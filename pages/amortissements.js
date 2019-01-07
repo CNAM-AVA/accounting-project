@@ -41,7 +41,7 @@ const rows = [
 	createData('dd/mm/YY', 'dd/mm/YY', '10 000 x (158/360) x 20', '1000'),
 ];
 
-class Ammortissements extends React.Component {
+class Amortissements extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -63,7 +63,7 @@ class Ammortissements extends React.Component {
 		return(
 			<MainLayout>
 				<FormControl component="fieldset" className={classes.formControl}>
-					<FormLabel className={classes.formLabel}>Type d'ammortissement</FormLabel>
+					<FormLabel className={classes.formLabel}>Type d'amortissement</FormLabel>
 					<RadioGroup
 						aria-label="type"
 						name="type"
@@ -109,7 +109,7 @@ class Ammortissements extends React.Component {
 					</FormControl>
 				</form>
 				<FormControl component="fieldset" className={classes.formControl}>
-					<FormLabel  className={classes.formLabel}>Tableau d'ammortissement</FormLabel>
+					<FormLabel  className={classes.formLabel}>Tableau d'amortissement</FormLabel>
 					<Table className={classes.table}>
 						<TableHead>
 						<TableRow>
@@ -140,8 +140,8 @@ class Ammortissements extends React.Component {
 	}
 }
 
-Ammortissements.propTypes = {
+Amortissements.propTypes = {
 	classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Ammortissements);
+export default withStyles(styles)(Amortissements);
