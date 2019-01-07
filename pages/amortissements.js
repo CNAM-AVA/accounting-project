@@ -38,7 +38,14 @@ function createData(dateDebut, dateFin, calcul, montant) {
 }
 
 const rows = [
-	createData('dd/mm/YY', 'dd/mm/YY', '10 000 x (158/360) x 20', '1000'),
+	createData('23/07/2018', '31/12/2018', '10 000 x (158/360) x 20%', '877,78 €'),
+	createData('01/01/2019', '31/12/2019', '10 000 x 20%', '2 000,00 €'),
+	createData('01/01/2020', '31/12/2020', '10 000 x 20%', '2 000,00 €'),
+	createData('01/01/2021', '31/12/2021', '10 000 x 20%', '2 000,00 €'),
+	createData('01/01/2022', '31/12/2022', '10 000 x 20%', '2 000,00 €'),
+	createData('01/01/2023', '22/07/2023', '10 000 x (202/360) x 20%', '2 000,00 €'),
+	createData('Total', '', '', '10 000,00 €'),
+	
 ];
 
 class Amortissements extends React.Component {
@@ -80,6 +87,19 @@ class Amortissements extends React.Component {
 					<FormControl component="fieldset" className={classes.formControl}>
 
 						<FormLabel className={classes.formLabel}>Calcul</FormLabel>
+						<TextField
+							id="dateDebut"
+							label="Date de début d'amortissement"
+							value={this.state.dateDebut}
+							onChange={this.handleChange}
+							type="date"
+							className={classes.textField}
+							InputLabelProps={{
+								shrink: true,
+							}}
+							margin="normal"
+							variant="outlined"
+						/>
 						<TextField
 							id="outlined-number"
 							label="Durée de vie du bien"
