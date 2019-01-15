@@ -57,21 +57,17 @@ class Amortissements extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			msg: "yes",
-			value: "lineaire",
-			formControls: {
-				dateDebut: {
-					value: moment().format('YYYY-MM-DD')
-				},
-				dateFin: {
-					value: moment().format('YYYY-MM-DD')
-				},
-				montant: {
-					value: '0'
-				},
-			},
-			rows: [],			
+			type: 'lineaire',
+			dateDebut: moment().format('YYYY-MM-DD'),
+			dateFin: moment().format('YYYY-MM-DD'),
+			montant: '',
+			rows: [],
+			// duree: '',
 		};
+		this.handleDateDebut = this.handleDateDebut.bind(this);
+		this.handleDateFin = this.handleDateFin.bind(this);
+		this.handleMontant = this.handleMontant.bind(this);
+
 	}
 
 	handleChange = event => {
@@ -83,37 +79,63 @@ class Amortissements extends React.Component {
 				[name]: value
 			}
 		});
-		console.log(this.state.formControls.dateDebut.value);
-		console.log(this.state.formControls.dateFin.value);
+		console.log(this.state.formControls);
+		// console.log('date fin: '+ this.state.formControls.dateFin.value);
 	};
 
 	handleSubmit = event => {
-		const name = event.target.name;
-		const value = event.target.value;
-		this.setState({ 
-			formControls: {
-				[name]: value
-			}
-		});
-		console.log(this.state.formControls.dateDebut.value);
+		event.preventDefault();
+		console.log(event);
+
+		var dateDebut = moment(this.state.dateDebut);
+		var dateFin = moment(this.state.dateFin);
+		let montant = this.state.montant;
+		let duree = dateFin.diff(dateDebut, 'years') + 1;
+		let lastDay = moment().date(31).month(11).year(dateDebut.year());
+		let calcul = montant * dateDebut.subtract() * ((100 / duree / 100);
+		let rows = [];
+		for(let i = 0; i < duree; i++){
+			dateDebut = (i !== 0) ? lastDay.add(1, 'd') : dateDebut;
+			lastDay = (i === duree - 1) ? dateFin : moment().date(31).month(11).year(dateDebut.year());
+			rows.push(createData(dateDebut.format('DD/MM/YYYY'), lastDay.format('DD/MM/YYYY'), 'test', montant));
+		}
+		this.setState({ rows: rows });
+		console.log(this.state.dateDebut);
+		console.log(this.state.dateFin);
+
+		console.log(this.state.rows);
+		console.log(duree);
 
 	};
 
+	handleDateDebut(e) {
+		let value = e.target.value;
+		this.setState({ dateDebut : value });
+	}
+
+	handleDateFin(e) {
+		let value = e.target.value;
+		this.setState({ dateFin : value });
+	}
+
+	handleMontant(e) {
+		let value = e.target.value;
+		this.setState({ montant : value });
+	}
+
 	render() {
 		const { classes } = this.props;
-		const rows = this.state.rows;
+		// const rows = this.state.rows;
 
 		return(
 			<MainLayout>
-				{/* <p>{ this.state.formControls.dateDebut.value }</p>
-				<p>{ this.state.formControls.dateFin.value }</p> */}
 				<FormControl component="fieldset" className={classes.formControl}>
 					<FormLabel className={classes.formLabel}>Type d'amortissement</FormLabel>
 					<RadioGroup
 						aria-label="type"
 						name="type"
 						className={classes.group}
-						value={this.state.value}
+						value={this.state.type}
 						onChange={this.handleChange}
 					>
 						<FormControlLabel value="lineaire" control={<Radio color="primary"/>} label="Linéaire"></FormControlLabel>
@@ -129,8 +151,8 @@ class Amortissements extends React.Component {
 							id="dateDebut"
 							label="Date de début d'amortissement"
 							name="dateDebut"
-							// value={this.state.formControls.dateDebut.value}
-							onChange={this.handleChange}
+							value={this.state.dateDebut}
+							onChange={this.handleDateDebut}
 							type="date"
 							className={classes.textField}
 							InputLabelProps={{
@@ -143,8 +165,8 @@ class Amortissements extends React.Component {
 							id="outlined-number"
 							label="Date de fin d'amortissement"
 							name="dateFin"
-							// value={this.state.formControls.dateFin.value}
-							onChange={this.handleChange}
+							value={this.state.dateFin}
+							onChange={this.handleDateFin}
 							type="date"
 							className={classes.textField}
 							InputLabelProps={{
@@ -157,8 +179,8 @@ class Amortissements extends React.Component {
 							id="outlined-montant"
 							label="Montant du bien"
 							name="montant"
-							value={this.state.formControls.montant.value}
-							onChange={this.handleChange}
+							value={this.state.montant}
+							onChange={this.handleMontant}
 							type="number"
 							className={classes.textField}
 							InputLabelProps={{
@@ -167,7 +189,7 @@ class Amortissements extends React.Component {
 							margin="normal"
 							variant="outlined"
 						/>
-						<Button variant="outlined" color="primary">
+						<Button type="submit" variant="outlined" color="primary">
 							Générer le tableau d'amortissement
 						</Button>
 					</FormControl>
@@ -184,15 +206,16 @@ class Amortissements extends React.Component {
 						</TableRow>
 						</TableHead>
 						<TableBody>
-						{rows.map(row => {
+						{this.state.rows.map(row => {
 							return (
 							<TableRow key={row.id}>
 								<TableCell component="th" scope="row">
-								{row.dateDebut}
+								{ row.dateDebut }
 								</TableCell>
-								<TableCell align="right">{row.dateFin}</TableCell>
-								<TableCell align="right">{row.calcul}</TableCell>
-								<TableCell align="right">{row.montant}</TableCell>
+
+								<TableCell align="right">{ row.dateFin }</TableCell>
+								<TableCell align="right">{ row.calcul }</TableCell>
+								<TableCell align="right">{ row.montant }</TableCell>
 							</TableRow>
 							);
 						})}
