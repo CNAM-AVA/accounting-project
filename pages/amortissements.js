@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MainLayout from "../components/MainLayout";
 import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import { Grid, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, TextField, TableRow, Table, TableHead, TableCell, TableBody, Button } from '@material-ui/core';
+import { Grid, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, TextField, TableRow, Table, TableHead, TableCell, TableBody, Button, InputAdornment } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -59,15 +59,19 @@ class Amortissements extends React.Component {
 		this.state = {
 			type: 'lineaire',
 			dateDebut: moment().format('YYYY-MM-DD'),
-			dateFin: moment().format('YYYY-MM-DD'),
+			duree: '',
 			montant: '',
 			rows: [],
 			// duree: '',
 		};
 		this.handleDateDebut = this.handleDateDebut.bind(this);
-		this.handleDateFin = this.handleDateFin.bind(this);
+		this.handleDuree = this.handleDuree.bind(this);
 		this.handleMontant = this.handleMontant.bind(this);
 
+	}
+
+	prorataTemporis(date, lastDay) {
+		return (30 - date.date() + 1) + 30 * lastDay.diff(date, 'month');
 	}
 
 	handleChange = event => {
@@ -79,33 +83,53 @@ class Amortissements extends React.Component {
 				[name]: value
 			}
 		});
-		console.log(this.state.formControls);
 		// console.log('date fin: '+ this.state.formControls.dateFin.value);
 	};
 
 	handleSubmit = event => {
 		event.preventDefault();
-		console.log(event);
 
-		var dateDebut = moment(this.state.dateDebut);
-		var dateFin = moment(this.state.dateFin);
+		let dateDebut = moment(this.state.dateDebut);
 		let montant = this.state.montant;
-		let duree = dateFin.diff(dateDebut, 'years') + 1;
-		let lastDay = moment().date(31).month(11).year(dateDebut.year());
-		let calcul = montant * dateDebut.subtract() * ((100 / duree / 100);
+		let duree = parseInt(this.state.duree);
+		let dateFin = moment(this.state.dateDebut).add(duree, 'year');
+
+		console.log('durée: ', duree);
+		console.log('date fin: ', dateFin.format('DD/MM/YYYY'));
+
+		let eoy, prorataT, calcul, calculStr, firstProrataT;
+
 		let rows = [];
-		for(let i = 0; i < duree; i++){
-			dateDebut = (i !== 0) ? lastDay.add(1, 'd') : dateDebut;
-			lastDay = (i === duree - 1) ? dateFin : moment().date(31).month(11).year(dateDebut.year());
-			rows.push(createData(dateDebut.format('DD/MM/YYYY'), lastDay.format('DD/MM/YYYY'), 'test', montant));
+		let nbRows = duree + 1;
+		for(let i = 0; i < nbRows; i++){
+
+			if(i == 0){
+				eoy = moment(dateDebut).endOf('year');
+
+				firstProrataT = prorataT = this.prorataTemporis(dateDebut, eoy);
+				calculStr = montant + ' x (' + prorataT + '/360) x ' + ((100 / duree / 100 ) * 100).toFixed(2) + '%';
+			}
+			else if(i == duree){
+				dateDebut = eoy.add(1, 'd');
+				eoy = dateFin;
+
+				prorataT = 360 - firstProrataT;
+				calculStr = montant + ' x (' + prorataT + '/360) x ' + (( 100 / duree / 100 ) * 100).toFixed(2) + '%';				
+			}
+			else {
+				dateDebut = eoy.add(1, 'd');
+				eoy = moment(dateDebut).endOf('year');
+				prorataT = 360;
+				calculStr = montant + ' x ' + (( 100 / duree / 100 ) * 100).toFixed(2) + '%';
+			}
+
+			calcul = montant * ( prorataT / 360 ) * ( 100 / duree / 100 );
+			calcul = Math.round(calcul*100)/100;
+
+			rows.push(createData(dateDebut.format('DD/MM/YYYY'), eoy.format('DD/MM/YYYY'), calculStr, calcul));
 		}
+		rows.push(createData('TOTAL : ', '', '', this.state.montant));
 		this.setState({ rows: rows });
-		console.log(this.state.dateDebut);
-		console.log(this.state.dateFin);
-
-		console.log(this.state.rows);
-		console.log(duree);
-
 	};
 
 	handleDateDebut(e) {
@@ -113,9 +137,9 @@ class Amortissements extends React.Component {
 		this.setState({ dateDebut : value });
 	}
 
-	handleDateFin(e) {
+	handleDuree(e) {
 		let value = e.target.value;
-		this.setState({ dateFin : value });
+		this.setState({ duree : value });
 	}
 
 	handleMontant(e) {
@@ -163,14 +187,18 @@ class Amortissements extends React.Component {
 						/>
 						<TextField
 							id="outlined-number"
-							label="Date de fin d'amortissement"
-							name="dateFin"
-							value={this.state.dateFin}
-							onChange={this.handleDateFin}
-							type="date"
+							label="Durée d'amortissement (en années)"
+							name="duree"
+							value={this.state.duree}
+							onChange={this.handleDuree}
+							type="number"
 							className={classes.textField}
 							InputLabelProps={{
 								shrink: true,
+							}}
+							InputProps={{
+								endAdornment: 
+								  <InputAdornment position="end">an(s)</InputAdornment>,
 							}}
 							margin="normal"
 							variant="outlined"
@@ -185,6 +213,10 @@ class Amortissements extends React.Component {
 							className={classes.textField}
 							InputLabelProps={{
 								shrink: true,
+							}}
+							InputProps={{
+								endAdornment: 
+								  <InputAdornment position="end">€</InputAdornment>,
 							}}
 							margin="normal"
 							variant="outlined"
